@@ -1,6 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Persistence and HTTP tests. Model tests run without a database; Testcontainers tests (step 1.16) need Docker. -->
+  <!-- Persistence tests against a REAL SQL Server started in Docker by Testcontainers (Docker must be running). -->
+  <ItemGroup>
+    <PackageReference Include="Testcontainers.MsSql" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\Services\Orders\Orders.Infrastructure\Orders.Infrastructure.csproj" />
   </ItemGroup>

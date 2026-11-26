@@ -86,6 +86,9 @@ Practice/portfolio project: a restaurant order-management system built to learn 
 dotnet build Comandas.slnx
 dotnet test Comandas.slnx
 dotnet test --project tests/Orders.Domain.Tests  # one project (Microsoft.Testing.Platform syntax)
+# Integration tests start a disposable SQL Server with Testcontainers: Docker must be running.
+# Ryuk is disabled in tests/Orders.IntegrationTests; if a run is killed, remove leftover containers with:
+docker rm -f $(docker ps -aq --filter label=comandas.tests=true)
 
 # Local SQL Server (until phase 3's docker compose). One-time setup; use the SAME password in both commands.
 #   The connection string is a dev secret: it lives in User Secrets, never in the repo.
