@@ -1,3 +1,4 @@
+using Comandas.Orders.Domain.Discounts;
 using Comandas.Orders.Domain.Orders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -45,8 +46,22 @@ internal sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
             .OnDelete(DeleteBehavior.Cascade);
         builder.Navigation(order => order.Lines).UsePropertyAccessMode(PropertyAccessMode.Field);
 
+        // Optional owned type with a nested owned type: the applied discount lives in the Orders table as
+        // DiscountDescription + DiscountAmount + DiscountAmountCurrency, all NULL when the order has no discount.
+        // Description is a non-nullable property, so EF uses it to tell "no discount" (NULL) from "a discount".
+        builder.OwnsOne(order => order.Discount, discount =>
+        {
+            discount.Property(d => d.Description)
+                .HasColumnName("DiscountDescription")
+                .HasMaxLength(AppliedDiscount.DescriptionMaxLength);
+
+            discount.OwnsOne(d => d.Amount, money => money.MapMoney("DiscountAmount"));
+            discount.Navigation(d => d.Amount).IsRequired();
+        });
+
         // Calculated or in-memory only: not columns.
         builder.Ignore(order => order.Subtotal);
+        builder.Ignore(order => order.Total);
         builder.Ignore(order => order.DomainEvents);
     }
 }

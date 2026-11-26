@@ -1,3 +1,4 @@
+using Comandas.Orders.Domain.Discounts;
 using Comandas.Orders.Domain.Menu;
 using Comandas.Orders.Domain.Orders;
 using Comandas.Orders.Infrastructure.Persistence;
@@ -121,6 +122,57 @@ public sealed class OrderPersistenceTests(SqlServerFixture database)
         var loaded = await new OrderRepository(context).GetByIdAsync(Guid.NewGuid(), Ct);
 
         loaded.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task SaveAndLoad_OrderWithDiscount_RoundTripsTheSnapshot()
+    {
+        var order = Order.Create(9, "EUR");
+        order.AddItem(Dish.Create("Burger", Money.Of(10m, "EUR")), Quantity.Of(2));
+        order.ApplyDiscount(new PercentageDiscount(10m));
+        await SaveNewAsync(order);
+
+        await using var readContext = database.CreateContext();
+        var loaded = await new OrderRepository(readContext).GetByIdAsync(order.Id, Ct);
+
+        loaded!.Discount.Should().Be(AppliedDiscount.Of("10% off", Money.Of(2m, "EUR")));
+        loaded.Total.Should().Be(Money.Of(18m, "EUR"));
+    }
+
+    [Fact]
+    public async Task SaveAndLoad_OrderWithoutDiscount_LoadsNullDiscount()
+    {
+        var order = Order.Create(10, "EUR");
+        order.AddItem(Dish.Create("Burger", Money.Of(10m, "EUR")), Quantity.One);
+        await SaveNewAsync(order);
+
+        await using var readContext = database.CreateContext();
+        var loaded = await new OrderRepository(readContext).GetByIdAsync(order.Id, Ct);
+
+        loaded!.Discount.Should().BeNull("all discount columns are NULL, so EF materializes no owned instance");
+        loaded.Total.Should().Be(Money.Of(10m, "EUR"));
+    }
+
+    [Fact]
+    public async Task EditLines_AfterDiscount_ClearsTheDiscountColumns()
+    {
+        var order = Order.Create(11, "EUR");
+        order.AddItem(Dish.Create("Burger", Money.Of(10m, "EUR")), Quantity.One);
+        order.ApplyDiscount(new PercentageDiscount(10m));
+        await SaveNewAsync(order);
+
+        await using (var context = database.CreateContext())
+        {
+            var tracked = await new OrderRepository(context).GetByIdAsync(order.Id, Ct);
+            tracked!.AddItem(Dish.Create("Fries", Money.Of(3.50m, "EUR")), Quantity.One);
+            await new EfUnitOfWork(context).SaveChangesAsync(Ct);
+        }
+
+        await using var readContext = database.CreateContext();
+        var storedDescription = await readContext.Database
+            .SqlQuery<string?>($"SELECT [DiscountDescription] AS [Value] FROM [Orders] WHERE [Id] = {order.Id}")
+            .SingleAsync(Ct);
+        storedDescription.Should().BeNull();
     }
 
     private async Task SaveNewAsync(Order order)

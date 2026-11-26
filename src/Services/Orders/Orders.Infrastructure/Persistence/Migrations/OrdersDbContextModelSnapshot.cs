@@ -171,6 +171,59 @@ namespace Comandas.Orders.Infrastructure.Persistence.Migrations
                     b.Navigation("Item");
                 });
 
+            modelBuilder.Entity("Comandas.Orders.Domain.Orders.Order", b =>
+                {
+                    b.OwnsOne("Comandas.Orders.Domain.Discounts.AppliedDiscount", "Discount", b1 =>
+                        {
+                            b1.Property<Guid>("OrderId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Description")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("DiscountDescription");
+
+                            b1.HasKey("OrderId");
+
+                            b1.ToTable("Orders");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderId");
+
+                            b1.OwnsOne("Comandas.SharedKernel.ValueObjects.Money", "Amount", b2 =>
+                                {
+                                    b2.Property<Guid>("AppliedDiscountOrderId")
+                                        .HasColumnType("uniqueidentifier");
+
+                                    b2.Property<decimal>("Amount")
+                                        .HasPrecision(18, 2)
+                                        .HasColumnType("decimal(18,2)")
+                                        .HasColumnName("DiscountAmount");
+
+                                    b2.Property<string>("Currency")
+                                        .IsRequired()
+                                        .HasMaxLength(3)
+                                        .IsUnicode(false)
+                                        .HasColumnType("char(3)")
+                                        .HasColumnName("DiscountAmountCurrency")
+                                        .IsFixedLength();
+
+                                    b2.HasKey("AppliedDiscountOrderId");
+
+                                    b2.ToTable("Orders");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("AppliedDiscountOrderId");
+                                });
+
+                            b1.Navigation("Amount")
+                                .IsRequired();
+                        });
+
+                    b.Navigation("Discount");
+                });
+
             modelBuilder.Entity("Comandas.Orders.Domain.Orders.OrderLine", b =>
                 {
                     b.HasOne("Comandas.Orders.Domain.Orders.Order", null)

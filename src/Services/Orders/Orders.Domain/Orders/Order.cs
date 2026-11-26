@@ -1,3 +1,4 @@
+using Comandas.Orders.Domain.Discounts;
 using Comandas.Orders.Domain.Menu;
 using Comandas.Orders.Domain.Orders.Events;
 using Comandas.Orders.Domain.Orders.States;
@@ -41,8 +42,14 @@ public sealed class Order : AggregateRoot<Guid>
 
     public IReadOnlyCollection<OrderLine> Lines => _lines.AsReadOnly();
 
-    /// <summary>Sum of all line totals, before discounts (discounts arrive in phase 2).</summary>
+    /// <summary>Sum of all line totals, before any discount.</summary>
     public Money Subtotal => _lines.Aggregate(Money.Zero(Currency), (total, line) => total + line.LineTotal);
+
+    /// <summary>The discount currently applied, or <c>null</c> when the order has none.</summary>
+    public AppliedDiscount? Discount { get; private set; }
+
+    /// <summary>What the customer pays: subtotal minus the applied discount.</summary>
+    public Money Total => Discount is null ? Subtotal : Subtotal - Discount.Amount;
 
     // State pattern: the object that knows what is allowed in the current status.
     private OrderState State => OrderState.From(Status);
@@ -92,11 +99,13 @@ public sealed class Order : AggregateRoot<Guid>
         if (existing is not null)
         {
             existing.Increase(quantity);
+            ClearDiscount();
             return existing;
         }
 
         var newLine = new OrderLine(item, quantity);
         _lines.Add(newLine);
+        ClearDiscount();
         return newLine;
     }
 
@@ -106,6 +115,7 @@ public sealed class Order : AggregateRoot<Guid>
         EnsureLinesCanBeEdited();
 
         GetLine(lineId).ChangeQuantity(newQuantity);
+        ClearDiscount();
     }
 
     public void RemoveLine(Guid lineId)
@@ -113,6 +123,40 @@ public sealed class Order : AggregateRoot<Guid>
         EnsureLinesCanBeEdited();
 
         _lines.Remove(GetLine(lineId));
+        ClearDiscount();
+    }
+
+    /// <summary>
+    /// Runs the given discount strategy against this order and stores the result as a snapshot.
+    /// Which strategy to use is decided outside (by <see cref="IDiscountFactory"/>); the order only guarantees
+    /// that whatever it stores keeps the total consistent. A strategy that saves nothing
+    /// (e.g. <see cref="NoDiscount"/>) leaves the order without a discount.
+    /// </summary>
+    public void ApplyDiscount(IDiscountStrategy strategy)
+    {
+        ArgumentNullException.ThrowIfNull(strategy);
+
+        // The discount follows the same rule as the lines it is calculated from: editable only before confirmation.
+        if (!State.CanEditLines)
+        {
+            throw new DomainException($"Cannot apply a discount to an order that is {Status}.");
+        }
+
+        var amount = strategy.CalculateDiscount(DiscountContext.For(this));
+
+        // Aggregate consistency: the order does not blindly trust the strategy, because a wrong amount here
+        // would mean a wrong bill.
+        if (amount.Currency != Currency)
+        {
+            throw new DomainException($"The discount is in {amount.Currency} but the order uses {Currency}.");
+        }
+
+        if (amount.Amount > Subtotal.Amount)
+        {
+            throw new DomainException($"The discount ({amount}) cannot be larger than the subtotal ({Subtotal}).");
+        }
+
+        Discount = amount.Amount == 0 ? null : AppliedDiscount.Of(strategy.Description, amount);
     }
 
     // --- Lifecycle (State pattern): Order delegates; the current state decides or throws. ---
@@ -155,6 +199,11 @@ public sealed class Order : AggregateRoot<Guid>
     }
 
     private void TransitionTo(OrderState next) => Status = next.Status;
+
+    // Decision for step 2.5: the discount is a snapshot calculated over the lines it saw. When the lines change,
+    // that amount may no longer be right (e.g. a 2-for-1 pair is removed), so it is dropped and must be applied
+    // again. This keeps the stored amount and the total always consistent with the current lines.
+    private void ClearDiscount() => Discount = null;
 
     private void EnsureLinesCanBeEdited()
     {

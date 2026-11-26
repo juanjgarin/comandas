@@ -7,6 +7,9 @@ public sealed record OrderDto(
     string Status,
     string Currency,
     decimal Subtotal,
+    string? DiscountDescription,
+    decimal DiscountAmount,
+    decimal Total,
     IReadOnlyList<OrderLineDto> Lines);
 
 public sealed record OrderLineDto(

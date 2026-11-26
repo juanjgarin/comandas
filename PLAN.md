@@ -204,7 +204,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* Strategy, polymorphism. *Verify:* tests green.
 - [x] **2.4 Discount Factory** — `IDiscountFactory.CreateBestFor(context, request)` builds the candidates (manual percentage, happy hour, 2-for-1) and returns the one that saves the most (D6), or the `NoDiscount` Null Object; settings come in as a plain `DiscountPolicy` record; tests.
   *Concept:* Factory, SRP (selection separated from calculation). *Verify:* tests green.
-- [ ] **2.5 Discounts in the `Order` aggregate** — apply discount, persist applied discount (owned type), total = subtotal − discount; migration.
+- [x] **2.5 Discounts in the `Order` aggregate** — `order.ApplyDiscount(strategy)` stores an `AppliedDiscount` snapshot (description + amount; the order guards currency and amount ≤ subtotal); total = subtotal − discount; allowed only while lines are editable (Created); any line change clears the discount, which must be applied again; persisted as an optional nested owned type (migration `AddDiscountToOrders`).
   *Concept:* aggregate consistency, owned types. *Verify:* domain + integration tests green.
 - [ ] **2.6 MediatR + first command** — `CreateOrderCommand` + handler replaces the application service.
   *Concept:* CQRS (command side), SRP, Mediator. *Verify:* endpoint still works; handler unit test.

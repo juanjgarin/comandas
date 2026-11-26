@@ -11,6 +11,9 @@ internal static class OrderMappings
         order.Status.ToString(),
         order.Currency,
         order.Subtotal.Amount,
+        order.Discount?.Description,
+        order.Discount?.Amount.Amount ?? 0m,
+        order.Total.Amount,
         [.. order.Lines.Select(line => new OrderLineDto(
             line.Id,
             line.MenuItemId,

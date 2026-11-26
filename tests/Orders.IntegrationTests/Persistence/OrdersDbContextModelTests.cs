@@ -59,6 +59,17 @@ public sealed class OrdersDbContextModelTests
         orderLinesTable.Should().Contain("[IsTwoForOneEligible] bit NOT NULL");
     }
 
+    [Theory]
+    [InlineData("[DiscountDescription] nvarchar(100) NULL")]
+    [InlineData("[DiscountAmount] decimal(18,2) NULL")]
+    [InlineData("[DiscountAmountCurrency] char(3) NULL")]
+    public void Model_StoresOptionalDiscountAsNullableOwnedColumnsInOrders(string column)
+    {
+        var ordersTable = CreateScript[CreateScript.IndexOf("CREATE TABLE [Orders]", StringComparison.Ordinal)..];
+
+        ordersTable.Should().Contain(column, "an order without a discount stores NULL in every discount column");
+    }
+
     [Fact]
     public void Model_StoresQuantityAsInt()
     {
