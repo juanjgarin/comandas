@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Domain: the heart of the service. Depends only on the SharedKernel, never on frameworks (EF Core, ASP.NET...). -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Comandas.SharedKernel\Comandas.SharedKernel.csproj" />
+  </ItemGroup>
+
+</Project>

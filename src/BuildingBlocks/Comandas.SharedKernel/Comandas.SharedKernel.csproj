@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Base building blocks shared by every service's Domain layer (Entity, ValueObject, DomainException...).
+       Must stay framework-free: no package references allowed here. -->
+
+</Project>
