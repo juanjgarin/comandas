@@ -17,6 +17,7 @@ public sealed class OrderLine : Entity<Guid>
         MenuItemId = item.Id;
         ItemName = item.Name;
         UnitPrice = item.GetPrice();
+        IsTwoForOneEligible = item.IsTwoForOneEligible;
         Quantity = quantity;
     }
 
@@ -34,6 +35,9 @@ public sealed class OrderLine : Entity<Guid>
     public string ItemName { get; private set; }
 
     public Money UnitPrice { get; private set; }
+
+    /// <summary>Snapshot of the item's 2-for-1 flag when ordered: later menu changes do not affect this line.</summary>
+    public bool IsTwoForOneEligible { get; private set; }
 
     public Quantity Quantity { get; private set; }
 

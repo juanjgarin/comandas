@@ -83,9 +83,12 @@ public sealed class Order : AggregateRoot<Guid>
             throw new DomainException($"'{item.Name}' is priced in {price.Currency} but the order uses {Currency}.");
         }
 
-        // Merge only when the snapshot price matches: if the menu price changed in between,
-        // the new units are sold at the new price, on their own line.
-        var existing = _lines.Find(line => line.MenuItemId == item.Id && line.UnitPrice == price);
+        // Merge only when the whole snapshot matches (price and 2-for-1 flag): if the menu changed in between,
+        // the new units are sold under the new conditions, on their own line.
+        var existing = _lines.Find(line =>
+            line.MenuItemId == item.Id
+            && line.UnitPrice == price
+            && line.IsTwoForOneEligible == item.IsTwoForOneEligible);
         if (existing is not null)
         {
             existing.Increase(quantity);

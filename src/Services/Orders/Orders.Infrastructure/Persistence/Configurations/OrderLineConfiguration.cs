@@ -24,6 +24,10 @@ internal sealed class OrderLineConfiguration : IEntityTypeConfiguration<OrderLin
         builder.OwnsOne(line => line.UnitPrice, money => money.MapMoney("UnitPrice"));
         builder.Navigation(line => line.UnitPrice).IsRequired();
 
+        // Snapshot of the menu flag at ordering time. No HasDefaultValue: for a bool, EF could not tell
+        // "set to false" from "not set". The migration still fills existing rows with false.
+        builder.Property(line => line.IsTwoForOneEligible);
+
         builder.Property(line => line.Quantity)
             .HasConversion(ValueObjectMappings.QuantityConverter);
 

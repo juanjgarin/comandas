@@ -52,6 +52,14 @@ public sealed class OrdersDbContextModelTests
     }
 
     [Fact]
+    public void Model_OrderLinesSnapshotTheTwoForOneFlag()
+    {
+        var orderLinesTable = CreateScript[CreateScript.IndexOf("CREATE TABLE [OrderLines]", StringComparison.Ordinal)..];
+
+        orderLinesTable.Should().Contain("[IsTwoForOneEligible] bit NOT NULL");
+    }
+
+    [Fact]
     public void Model_StoresQuantityAsInt()
     {
         CreateScript.Should().Contain("[Quantity] int NOT NULL");

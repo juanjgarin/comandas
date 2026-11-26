@@ -94,6 +94,30 @@ public sealed class OrderTests
     }
 
     [Fact]
+    public void AddItem_SameItemAfterTwoForOneFlagChanges_AddsSeparateLine()
+    {
+        var order = Order.Create(1, "EUR");
+        order.AddItem(_drink, Quantity.One);
+
+        _drink.EnableTwoForOne();
+        order.AddItem(_drink, Quantity.One);
+
+        order.Lines.Select(line => line.IsTwoForOneEligible).Should().Equal(false, true);
+    }
+
+    [Fact]
+    public void AddItem_SnapshotsTheTwoForOneFlag()
+    {
+        _drink.EnableTwoForOne();
+        var order = Order.Create(1, "EUR");
+
+        var line = order.AddItem(_drink, Quantity.One);
+        _drink.DisableTwoForOne();
+
+        line.IsTwoForOneEligible.Should().BeTrue();
+    }
+
+    [Fact]
     public void AddItem_WhenMenuPriceChangesLater_KeepsTheSnapshotPrice()
     {
         var order = Order.Create(1, "EUR");

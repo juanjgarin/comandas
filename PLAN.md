@@ -200,7 +200,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* Strategy, OCP. *Verify:* tests green.
 - [x] **2.2 Happy hour strategy** — daily window [start, end) incl. windows crossing midnight, evaluated in the server's local time when the discount is calculated; uses `TimeProvider` (tested with `FakeTimeProvider`) and composes a `PercentageDiscount`; tests at window edges.
   *Concept:* Strategy, DIP (time as a dependency). *Verify:* tests green.
-- [ ] **2.3 2-for-1 strategy** — on lines whose item is flagged; tests (odd/even quantities, combos).
+- [x] **2.3 2-for-1 strategy** — counted per line (floor(quantity / 2) free at the line's price); `OrderLine` snapshots the item's 2-for-1 flag (migration `AddTwoForOneFlagToOrderLines`; line merging now also requires the same flag); tests (odd/even quantities, combos, flag changed after ordering).
   *Concept:* Strategy, polymorphism. *Verify:* tests green.
 - [ ] **2.4 Discount Factory** — selects/builds the applicable strategy(ies) from context (time, items, requested code); stacking policy per decision D6; tests.
   *Concept:* Factory, SRP (selection separated from calculation). *Verify:* tests green.

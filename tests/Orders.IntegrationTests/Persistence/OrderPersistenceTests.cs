@@ -27,6 +27,7 @@ public sealed class OrderPersistenceTests(SqlServerFixture database)
     {
         var burger = Dish.Create("Burger", Money.Of(10m, "EUR"));
         var soda = Dish.Create("Soda", Money.Of(2.50m, "EUR"));
+        soda.EnableTwoForOne();
         var order = Order.Create(12, "EUR");
         order.AddItem(burger, Quantity.Of(2));
         order.AddItem(soda, Quantity.Of(3));
@@ -43,8 +44,8 @@ public sealed class OrderPersistenceTests(SqlServerFixture database)
         loaded.Subtotal.Should().Be(Money.Of(27.50m, "EUR"));
         loaded.Lines.Should().BeEquivalentTo(
             [
-                new { ItemName = "Burger", UnitPrice = Money.Of(10m, "EUR"), Quantity = Quantity.Of(2) },
-                new { ItemName = "Soda", UnitPrice = Money.Of(2.50m, "EUR"), Quantity = Quantity.Of(3) },
+                new { ItemName = "Burger", UnitPrice = Money.Of(10m, "EUR"), Quantity = Quantity.Of(2), IsTwoForOneEligible = false },
+                new { ItemName = "Soda", UnitPrice = Money.Of(2.50m, "EUR"), Quantity = Quantity.Of(3), IsTwoForOneEligible = true },
             ],
             options => options.ExcludingMissingMembers());
         loaded.DomainEvents.Should().BeEmpty("events are not persisted; a loaded aggregate starts clean");
