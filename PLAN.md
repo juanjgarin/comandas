@@ -208,8 +208,8 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* aggregate consistency, owned types. *Verify:* domain + integration tests green.
 - [x] **2.6 MediatR + first command** — MediatR 12.5.0 registered by assembly scan; `CreateOrderCommand` + `CreateOrderCommandHandler` (feature folder `Orders/Commands/CreateOrder`) replace `OrderApplicationService.CreateOrderAsync`; the controller sends it through `ISender` (HTTP request and command stay separate types).
   *Concept:* CQRS (command side), SRP, Mediator. *Verify:* endpoint still works; handler unit test.
-- [ ] **2.7 Remaining commands** — add/remove item, apply discount, state transitions.
-  *Concept:* CQRS. *Verify:* handler tests green.
+- [x] **2.7 Remaining commands** — one command + handler per intention: `AddOrderItem`, `ChangeOrderLineQuantity`, `RemoveOrderLine`, `ApplyOrderDiscount` (Factory + aggregate; new endpoint `POST /api/orders/{id}/discount`) and one per transition (`ConfirmOrder`, `StartOrderPreparation`, `MarkOrderReady`, `DeliverOrder`, `CancelOrder`). Shared "load or not found, act, save" script in an `OrderCommandHandler<TCommand>` base (Template Method). `DiscountOptions` ("Discounts" section) validated at startup with `ValidateOnStart`, reusing the domain rules.
+  *Concept:* CQRS, Template Method, Options validation (fail fast). *Verify:* handler tests green.
 - [ ] **2.8 Queries** — `GetOrderByIdQuery`, `GetOrdersQuery` (filter by table/state), `GetMenuQuery`; read side with `AsNoTracking` + projections to DTOs (read access approach per decision D5).
   *Concept:* CQRS (query side), EF read performance. *Verify:* tests green.
 - [ ] **2.9 Validation pipeline** — FluentValidation validators + `ValidationBehavior<TRequest,TResponse>`.

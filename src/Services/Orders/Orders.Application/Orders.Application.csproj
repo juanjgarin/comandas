@@ -7,6 +7,11 @@
     <PackageReference Include="MediatR" />
   </ItemGroup>
 
+  <!-- Internal helpers (e.g. the options validator) are reachable only through DI; the unit tests may use them directly. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="Orders.Application.Tests" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Orders.Domain\Orders.Domain.csproj" />
   </ItemGroup>

@@ -35,7 +35,15 @@ Content-Type: application/json
   "quantity": 3
 }
 
-### 5. See the order (lines, subtotal, status)
+### 5. Apply the best discount available now (happy hour, 2-for-1, or this manual 10%)
+POST {{baseUrl}}/api/orders/{{createOrder.response.body.$.id}}/discount
+Content-Type: application/json
+
+{
+  "manualPercentage": 10
+}
+
+### 5b. See the order (lines, subtotal, discount, total, status)
 GET {{baseUrl}}/api/orders/{{createOrder.response.body.$.id}}
 
 ### 6. Lifecycle: Created -> Confirmed -> InPreparation -> Ready -> Delivered

@@ -9,6 +9,9 @@ public sealed record AddItemRequest(Guid MenuItemId, int Quantity);
 
 public sealed record ChangeLineQuantityRequest(int Quantity);
 
+/// <summary>Optional manual percentage (e.g. staff discount); without it only automatic discounts compete.</summary>
+public sealed record ApplyDiscountRequest(decimal? ManualPercentage);
+
 public sealed record CreatedResponse(Guid Id);
 
 public sealed record AddItemResponse(Guid LineId);

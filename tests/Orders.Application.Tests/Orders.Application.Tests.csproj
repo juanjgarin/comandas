@@ -2,6 +2,11 @@
 
   <!-- Application use cases tested with hand-written fakes: no database, no mocking library. -->
   <ItemGroup>
+    <!-- FakeTimeProvider: drives the real DiscountFactory at a chosen time of day. -->
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Services\Orders\Orders.Application\Orders.Application.csproj" />
   </ItemGroup>
 

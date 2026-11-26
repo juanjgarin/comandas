@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // --- Composition root: the only place that knows every layer and wires them together. ---
 builder.Services.Configure<RestaurantOptions>(builder.Configuration.GetSection(RestaurantOptions.SectionName));
+builder.Services.Configure<DiscountOptions>(builder.Configuration.GetSection(DiscountOptions.SectionName));
 
 var connectionString = builder.Configuration.GetConnectionString("OrdersDb");
 if (string.IsNullOrWhiteSpace(connectionString))
