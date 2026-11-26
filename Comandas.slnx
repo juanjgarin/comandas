@@ -12,5 +12,6 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Comandas.ArchitectureTests/Comandas.ArchitectureTests.csproj" />
+    <Project Path="tests/Comandas.SharedKernel.Tests/Comandas.SharedKernel.Tests.csproj" />
   </Folder>
 </Solution>

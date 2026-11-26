@@ -166,7 +166,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* Clean Architecture, Dependency Rule. *Verify:* `dotnet build`.
 - [x] **1.3 Architecture tests** — a test project that fails if, e.g., Domain references EF Core or Application references Infrastructure.
   *Concept:* making architecture rules executable. *Verify:* `dotnet test` green; temporarily adding a forbidden reference turns it red.
-- [ ] **1.4 SharedKernel + `Money` value object** — `Entity`, `AggregateRoot`, `ValueObject`, `DomainException`, `IDomainEvent`; `Money` (amount + currency, immutable, arithmetic, no negatives, currency mismatch throws) with unit tests.
+- [x] **1.4 SharedKernel + `Money` value object** — `Entity`, `AggregateRoot`, `ValueObject`, `DomainException`, `IDomainEvent`; `Money` (amount + currency, immutable, arithmetic, no negatives, currency mismatch throws) with unit tests.
   *Concept:* Value Object, immutability, value equality, encapsulation. *Verify:* `Money` tests green.
 - [ ] **1.5 `Quantity` value object** — positive integer with bounds, tests.
   *Concept:* Value Object, primitive obsession avoided. *Verify:* tests green.
@@ -293,7 +293,7 @@ At each step below I will present the options with pros and cons and you choose.
 | # | Decision | When | Options | Lean |
 |---|---|---|---|---|
 | D1 | Package licensing. MediatR (v13+), FluentAssertions (v8+) and MassTransit (v9+) moved to commercial licenses with free tiers/conditions. | 1.1 | Latest versions under their free/non-commercial terms · last open-source versions · hand-rolled mediator | ✅ **Decided (2026-11-26):** AwesomeAssertions (Apache 2.0 fork, same API as FluentAssertions) · MediatR 12.5.0 (last Apache 2.0) · MassTransit 8.x (Apache 2.0; official maintenance ends after 2026 — revisit at 4.2) |
-| D2 | Shared base classes | 1.4 | `Comandas.SharedKernel` project · copy small base classes into each service | SharedKernel (tiny, stable) |
+| D2 | Shared base classes | 1.4 | `Comandas.SharedKernel` project · copy small base classes into each service | ✅ **Decided:** SharedKernel. Value Objects use an explicit `ValueObject` base class (`GetEqualityComponents`), not C# records. `Money` lives in the SharedKernel because Menu and Orders both need it. |
 | D3 | API style | 1.15 | Minimal APIs (endpoint groups) · Controllers | Minimal APIs |
 | D4 | `MenuItem` inheritance mapping | 1.12 | TPH · TPT · TPC | TPH |
 | D5 | Query side data access | 2.8 | Queries use `DbContext` directly (via a read interface) · go through repositories | Read interface over `DbContext` |

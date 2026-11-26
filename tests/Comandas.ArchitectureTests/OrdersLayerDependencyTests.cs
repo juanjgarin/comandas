@@ -37,8 +37,8 @@ public sealed class OrdersLayerDependencyTests
     [Fact]
     public void SharedKernel_ShouldNotDependOn_AnyServiceLayer()
     {
-        IArchRule rule = Types().That().Are(SharedKernel)
-            .Should().NotDependOnAny(Types().That().Are(Domain).Or().Are(Application).Or().Are(Infrastructure).Or().Are(Api))
+        IArchRule rule = Types().That().Are(SharedKernelLayer)
+            .Should().NotDependOnAny(Types().That().Are(DomainLayer).Or().Are(ApplicationLayer).Or().Are(InfrastructureLayer).Or().Are(ApiLayer))
             .Because("the SharedKernel is reused by every service and cannot know any of them")
             .WithoutRequiringPositiveResults();
 
@@ -48,8 +48,8 @@ public sealed class OrdersLayerDependencyTests
     [Fact]
     public void Domain_ShouldNotDependOn_OuterLayers()
     {
-        IArchRule rule = Types().That().Are(Domain)
-            .Should().NotDependOnAny(Types().That().Are(Application).Or().Are(Infrastructure).Or().Are(Api))
+        IArchRule rule = Types().That().Are(DomainLayer)
+            .Should().NotDependOnAny(Types().That().Are(ApplicationLayer).Or().Are(InfrastructureLayer).Or().Are(ApiLayer))
             .Because("the Domain is the core: outer layers depend on it, never the other way round")
             .WithoutRequiringPositiveResults();
 
@@ -59,8 +59,8 @@ public sealed class OrdersLayerDependencyTests
     [Fact]
     public void Application_ShouldNotDependOn_InfrastructureOrApi()
     {
-        IArchRule rule = Types().That().Are(Application)
-            .Should().NotDependOnAny(Types().That().Are(Infrastructure).Or().Are(Api))
+        IArchRule rule = Types().That().Are(ApplicationLayer)
+            .Should().NotDependOnAny(Types().That().Are(InfrastructureLayer).Or().Are(ApiLayer))
             .Because("Application declares interfaces that Infrastructure implements (Dependency Inversion)")
             .WithoutRequiringPositiveResults();
 
@@ -70,8 +70,8 @@ public sealed class OrdersLayerDependencyTests
     [Fact]
     public void Infrastructure_ShouldNotDependOn_Api()
     {
-        IArchRule rule = Types().That().Are(Infrastructure)
-            .Should().NotDependOnAny(Api)
+        IArchRule rule = Types().That().Are(InfrastructureLayer)
+            .Should().NotDependOnAny(ApiLayer)
             .Because("the API is the composition root; nothing else may depend on it")
             .WithoutRequiringPositiveResults();
 
@@ -81,7 +81,7 @@ public sealed class OrdersLayerDependencyTests
     [Fact]
     public void DomainAndSharedKernel_ShouldNotDependOn_Frameworks()
     {
-        IArchRule rule = Types().That().Are(Domain).Or().Are(SharedKernel)
+        IArchRule rule = Types().That().Are(DomainLayer).Or().Are(SharedKernelLayer)
             .Should().NotDependOnAnyTypesThat().ResideInNamespaceMatching(FrameworkNamespaces)
             .Because("business rules must not change when a framework (EF Core, ASP.NET, MediatR...) changes")
             .WithoutRequiringPositiveResults();
@@ -92,7 +92,7 @@ public sealed class OrdersLayerDependencyTests
     [Fact]
     public void Application_ShouldNotDependOn_PersistenceOrTransportFrameworks()
     {
-        IArchRule rule = Types().That().Are(Application)
+        IArchRule rule = Types().That().Are(ApplicationLayer)
             .Should().NotDependOnAnyTypesThat().ResideInNamespaceMatching(PersistenceAndTransportNamespaces)
             .Because("database, HTTP, messaging and cache details belong to Infrastructure and API")
             .WithoutRequiringPositiveResults();

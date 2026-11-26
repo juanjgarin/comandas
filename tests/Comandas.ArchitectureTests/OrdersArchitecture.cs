@@ -22,18 +22,18 @@ internal static class OrdersArchitecture
         .LoadAssemblies(SharedKernelAssembly, DomainAssembly, ApplicationAssembly, InfrastructureAssembly, ApiAssembly)
         .Build();
 
-    public static readonly IObjectProvider<IType> SharedKernel =
+    public static readonly IObjectProvider<IType> SharedKernelLayer =
         Types().That().ResideInAssembly(SharedKernelAssembly).As("SharedKernel");
 
-    public static readonly IObjectProvider<IType> Domain =
+    public static readonly IObjectProvider<IType> DomainLayer =
         Types().That().ResideInAssembly(DomainAssembly).As("Orders.Domain");
 
-    public static readonly IObjectProvider<IType> Application =
+    public static readonly IObjectProvider<IType> ApplicationLayer =
         Types().That().ResideInAssembly(ApplicationAssembly).As("Orders.Application");
 
-    public static readonly IObjectProvider<IType> Infrastructure =
+    public static readonly IObjectProvider<IType> InfrastructureLayer =
         Types().That().ResideInAssembly(InfrastructureAssembly).As("Orders.Infrastructure");
 
-    public static readonly IObjectProvider<IType> Api =
+    public static readonly IObjectProvider<IType> ApiLayer =
         Types().That().ResideInAssembly(ApiAssembly).As("Orders.API");
 }
