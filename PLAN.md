@@ -184,7 +184,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* DIP, ISP, Repository + Unit of Work (abstraction side). *Verify:* `dotnet build`, architecture tests still green.
 - [x] **1.12 EF Core mapping** — `OrdersDbContext`, one `IEntityTypeConfiguration<T>` per entity, `Money` as owned type, state stored as a string, `MenuItem` hierarchy mapping (decision D4), combo children relationship, `RowVersion` on `Order` (shadow property), required shadow foreign keys, backing fields for collections.
   *Concept:* Fluent API, owned types, inheritance mapping, optimistic concurrency, SRP. *Verify:* `dotnet build`.
-- [ ] **1.13 Repositories + Unit of Work** — implementations; read methods use `AsNoTracking`.
+- [x] **1.13 Repositories + Unit of Work** — implementations; orders loaded tracked with their lines; the read-only menu loaded whole with `AsNoTrackingWithIdentityResolution` so nested combos form a complete tree (real-database tests in 1.16).
   *Concept:* Repository + UoW (implementation side). *Verify:* `dotnet build`.
 - [ ] **1.14 Migrations, startup migration, seed** — initial migration, apply on startup, seed a small menu (dishes + one combo). Local SQL Server via `docker run` (compose arrives in phase 3).
   *Concept:* EF migrations, data seeding. *Verify:* API starts, database and tables exist.

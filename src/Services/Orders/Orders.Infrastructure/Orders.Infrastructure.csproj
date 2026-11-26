@@ -9,4 +9,9 @@
     <ProjectReference Include="..\Orders.Application\Orders.Application.csproj" />
   </ItemGroup>
 
+  <!-- Implementations are internal (only reachable through DI); the integration tests may use them directly. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="Orders.IntegrationTests" />
+  </ItemGroup>
+
 </Project>
