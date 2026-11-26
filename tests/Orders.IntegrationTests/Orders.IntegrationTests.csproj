@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Persistence and HTTP tests. Model tests run without a database; Testcontainers tests (step 1.16) need Docker. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Services\Orders\Orders.Infrastructure\Orders.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

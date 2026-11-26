@@ -15,6 +15,11 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.15" />
   </ItemGroup>
 
+  <!-- Persistence (EF Core 10.x, matching the dotnet-ef 10.0.x local tool) -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.15" />
+  </ItemGroup>
+
   <!-- Testing -->
   <ItemGroup>
     <PackageVersion Include="xunit.v3" Version="4.0.3" />

@@ -2,6 +2,10 @@
 
   <!-- Infrastructure: technical details (EF Core, messaging, cache). Implements Application's interfaces. -->
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Orders.Application\Orders.Application.csproj" />
   </ItemGroup>
 

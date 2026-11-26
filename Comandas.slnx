@@ -15,5 +15,6 @@
     <Project Path="tests/Comandas.SharedKernel.Tests/Comandas.SharedKernel.Tests.csproj" />
     <Project Path="tests/Orders.Application.Tests/Orders.Application.Tests.csproj" />
     <Project Path="tests/Orders.Domain.Tests/Orders.Domain.Tests.csproj" />
+    <Project Path="tests/Orders.IntegrationTests/Orders.IntegrationTests.csproj" />
   </Folder>
 </Solution>

@@ -182,7 +182,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* Observer / Domain Events. *Verify:* tests green.
 - [x] **1.11 Application abstractions + use-case services** — `IOrderRepository`, `IMenuItemRepository`, `IUnitOfWork`; simple application services for create order / add item / change state (replaced by CQRS in phase 2).
   *Concept:* DIP, ISP, Repository + Unit of Work (abstraction side). *Verify:* `dotnet build`, architecture tests still green.
-- [ ] **1.12 EF Core mapping** — `OrdersDbContext`, one `IEntityTypeConfiguration<T>` per entity, `Money` as owned type, state stored as a string, `MenuItem` hierarchy mapping (decision D4), combo children relationship, `RowVersion` on `Order`, backing fields for collections.
+- [x] **1.12 EF Core mapping** — `OrdersDbContext`, one `IEntityTypeConfiguration<T>` per entity, `Money` as owned type, state stored as a string, `MenuItem` hierarchy mapping (decision D4), combo children relationship, `RowVersion` on `Order` (shadow property), required shadow foreign keys, backing fields for collections.
   *Concept:* Fluent API, owned types, inheritance mapping, optimistic concurrency, SRP. *Verify:* `dotnet build`.
 - [ ] **1.13 Repositories + Unit of Work** — implementations; read methods use `AsNoTracking`.
   *Concept:* Repository + UoW (implementation side). *Verify:* `dotnet build`.
@@ -295,7 +295,7 @@ At each step below I will present the options with pros and cons and you choose.
 | D1 | Package licensing. MediatR (v13+), FluentAssertions (v8+) and MassTransit (v9+) moved to commercial licenses with free tiers/conditions. | 1.1 | Latest versions under their free/non-commercial terms · last open-source versions · hand-rolled mediator | ✅ **Decided (2026-11-26):** AwesomeAssertions (Apache 2.0 fork, same API as FluentAssertions) · MediatR 12.5.0 (last Apache 2.0) · MassTransit 8.x (Apache 2.0; official maintenance ends after 2026 — revisit at 4.2) |
 | D2 | Shared base classes | 1.4 | `Comandas.SharedKernel` project · copy small base classes into each service | ✅ **Decided:** SharedKernel. Value Objects use an explicit `ValueObject` base class (`GetEqualityComponents`), not C# records. `Money` lives in the SharedKernel because Menu and Orders both need it. |
 | D3 | API style | 1.15 | Minimal APIs (endpoint groups) · Controllers | Minimal APIs |
-| D4 | `MenuItem` inheritance mapping | 1.12 | TPH · TPT · TPC | TPH |
+| D4 | `MenuItem` inheritance mapping | 1.12 | TPH · TPT · TPC | ✅ **Decided:** TPH (one `MenuItems` table, `Kind` discriminator; dish/combo-only columns are NULL for the other type) |
 | D5 | Query side data access | 2.8 | Queries use `DbContext` directly (via a read interface) · go through repositories | Read interface over `DbContext` |
 | D6 | Discount stacking | 2.4 | One discount per order (best wins) · stack in a defined order | Best wins |
 | D7 | Infra-only startup | 3.5 | `docker compose up sqlserver rabbitmq redis` · compose profiles · separate infra file | Profiles |
