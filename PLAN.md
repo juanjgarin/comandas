@@ -198,7 +198,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
 
 - [x] **2.1 Discount Strategy: fixed percentage** — `IDiscountStrategy` (`Description` + `CalculateDiscount(DiscountContext)`; strategies get a read-only context, not the Order), `PercentageDiscount` in (0, 100]; tests.
   *Concept:* Strategy, OCP. *Verify:* tests green.
-- [ ] **2.2 Happy hour strategy** — time-window based, uses `TimeProvider` (testable with `FakeTimeProvider`); tests at window edges.
+- [x] **2.2 Happy hour strategy** — daily window [start, end) incl. windows crossing midnight, evaluated in the server's local time when the discount is calculated; uses `TimeProvider` (tested with `FakeTimeProvider`) and composes a `PercentageDiscount`; tests at window edges.
   *Concept:* Strategy, DIP (time as a dependency). *Verify:* tests green.
 - [ ] **2.3 2-for-1 strategy** — on lines whose item is flagged; tests (odd/even quantities, combos).
   *Concept:* Strategy, polymorphism. *Verify:* tests green.
@@ -232,7 +232,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* resilience in distributed startup. *Verify:* API survives starting before the DB.
 - [ ] **3.4 Multi-stage Dockerfile for Orders.API** — restore/build/publish in SDK image, run in ASP.NET runtime image as non-root; `.dockerignore`; base image per decision D8.
   *Concept:* multi-stage builds, layer caching, small images. *Verify:* `docker build` succeeds; image size noted.
-- [ ] **3.5 docker-compose** — `sqlserver` (with healthcheck + volume) and `orders-api` (`depends_on: service_healthy`); config via environment variables and `.env`; infra-only startup supported (decision D7).
+- [ ] **3.5 docker-compose** — `sqlserver` (with healthcheck + volume) and `orders-api` (`depends_on: service_healthy`); config via environment variables and `.env`; infra-only startup supported (decision D7); set the `TZ` environment variable on orders-api (e.g. `Europe/Madrid`): happy hour uses the server's local time and containers default to UTC.
   *Concept:* container orchestration, 12-factor config. *Verify:* `docker compose up` → API healthy; infra-only command starts only infra.
 - [ ] **3.6 Smoke test in containers** — run the `.http` happy path against the containerized API.
   *Verify:* order created and confirmed through Docker.

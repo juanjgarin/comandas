@@ -2,6 +2,11 @@
 
   <!-- Pure unit tests of the Orders domain: no database, no mocks, no I/O. -->
   <ItemGroup>
+    <!-- FakeTimeProvider: a controllable clock for time-dependent rules (happy hour). -->
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Services\Orders\Orders.Domain\Orders.Domain.csproj" />
   </ItemGroup>
 
