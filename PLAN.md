@@ -180,7 +180,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* State, OCP, LSP. *Verify:* every valid and invalid transition covered.
 - [x] **1.10 Domain events** — `Order` raises `OrderCreatedDomainEvent`, `OrderConfirmedDomainEvent`, `OrderPreparationStartedDomainEvent`, `OrderReadyDomainEvent`, `OrderDeliveredDomainEvent`, `OrderCancelledDomainEvent` after each successful transition (collected, not yet dispatched); tests assert they are raised, in order, and never on rejected transitions.
   *Concept:* Observer / Domain Events. *Verify:* tests green.
-- [ ] **1.11 Application abstractions + use-case services** — `IOrderRepository`, `IMenuItemRepository`, `IUnitOfWork`; simple application services for create order / add item / change state (replaced by CQRS in phase 2).
+- [x] **1.11 Application abstractions + use-case services** — `IOrderRepository`, `IMenuItemRepository`, `IUnitOfWork`; simple application services for create order / add item / change state (replaced by CQRS in phase 2).
   *Concept:* DIP, ISP, Repository + Unit of Work (abstraction side). *Verify:* `dotnet build`, architecture tests still green.
 - [ ] **1.12 EF Core mapping** — `OrdersDbContext`, one `IEntityTypeConfiguration<T>` per entity, `Money` as owned type, state stored as a string, `MenuItem` hierarchy mapping (decision D4), combo children relationship, `RowVersion` on `Order`, backing fields for collections.
   *Concept:* Fluent API, owned types, inheritance mapping, optimistic concurrency, SRP. *Verify:* `dotnet build`.

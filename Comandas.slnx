@@ -13,6 +13,7 @@
   <Folder Name="/tests/">
     <Project Path="tests/Comandas.ArchitectureTests/Comandas.ArchitectureTests.csproj" />
     <Project Path="tests/Comandas.SharedKernel.Tests/Comandas.SharedKernel.Tests.csproj" />
+    <Project Path="tests/Orders.Application.Tests/Orders.Application.Tests.csproj" />
     <Project Path="tests/Orders.Domain.Tests/Orders.Domain.Tests.csproj" />
   </Folder>
 </Solution>

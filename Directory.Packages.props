@@ -10,6 +10,11 @@
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
 
+  <!-- Microsoft.Extensions (keep on the 10.0.x line, matching the .NET 10 runtime) -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.15" />
+  </ItemGroup>
+
   <!-- Testing -->
   <ItemGroup>
     <PackageVersion Include="xunit.v3" Version="4.0.3" />
