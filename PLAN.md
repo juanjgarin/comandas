@@ -178,7 +178,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* aggregate root, invariants, encapsulation (`IReadOnlyCollection`, private setters). *Verify:* tests green.
 - [x] **1.9 Order states (State pattern)** — `OrderState` abstract + one internal singleton class per state, each returning the next state (variant chosen over the GoF back-reference one); `Order` persists an `OrderStatus` enum; `Order` delegates `Confirm/StartPreparation/MarkReady/Deliver/Cancel`; invalid transitions throw `DomainException`; lines can only be changed while `Created`; full transition-matrix tests (theory-based).
   *Concept:* State, OCP, LSP. *Verify:* every valid and invalid transition covered.
-- [ ] **1.10 Domain events** — `Order` raises `OrderCreated`, `OrderConfirmed`, `OrderReady`, `OrderCancelled`… (collected, not yet dispatched); tests assert they are raised.
+- [x] **1.10 Domain events** — `Order` raises `OrderCreatedDomainEvent`, `OrderConfirmedDomainEvent`, `OrderPreparationStartedDomainEvent`, `OrderReadyDomainEvent`, `OrderDeliveredDomainEvent`, `OrderCancelledDomainEvent` after each successful transition (collected, not yet dispatched); tests assert they are raised, in order, and never on rejected transitions.
   *Concept:* Observer / Domain Events. *Verify:* tests green.
 - [ ] **1.11 Application abstractions + use-case services** — `IOrderRepository`, `IMenuItemRepository`, `IUnitOfWork`; simple application services for create order / add item / change state (replaced by CQRS in phase 2).
   *Concept:* DIP, ISP, Repository + Unit of Work (abstraction side). *Verify:* `dotnet build`, architecture tests still green.

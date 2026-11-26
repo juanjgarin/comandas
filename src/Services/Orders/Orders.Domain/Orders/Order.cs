@@ -1,4 +1,5 @@
 using Comandas.Orders.Domain.Menu;
+using Comandas.Orders.Domain.Orders.Events;
 using Comandas.Orders.Domain.Orders.States;
 using Comandas.SharedKernel.Domain;
 using Comandas.SharedKernel.ValueObjects;
@@ -56,7 +57,9 @@ public sealed class Order : AggregateRoot<Guid>
         // Money already knows how to validate and normalize an ISO currency code: reuse it instead of duplicating the rule.
         var normalizedCurrency = Money.Zero(currency).Currency;
 
-        return new Order(Guid.CreateVersion7(), tableNumber, normalizedCurrency);
+        var order = new Order(Guid.CreateVersion7(), tableNumber, normalizedCurrency);
+        order.Raise(new OrderCreatedDomainEvent(order.Id, order.TableNumber));
+        return order;
     }
 
     /// <summary>
@@ -110,6 +113,8 @@ public sealed class Order : AggregateRoot<Guid>
     }
 
     // --- Lifecycle (State pattern): Order delegates; the current state decides or throws. ---
+    // Each successful transition announces itself with a domain event (Observer). The event is raised
+    // AFTER the transition, so a rejected transition announces nothing.
 
     public void Confirm()
     {
@@ -119,15 +124,32 @@ public sealed class Order : AggregateRoot<Guid>
         }
 
         TransitionTo(State.Confirm());
+        Raise(new OrderConfirmedDomainEvent(Id, TableNumber));
     }
 
-    public void StartPreparation() => TransitionTo(State.StartPreparation());
+    public void StartPreparation()
+    {
+        TransitionTo(State.StartPreparation());
+        Raise(new OrderPreparationStartedDomainEvent(Id));
+    }
 
-    public void MarkReady() => TransitionTo(State.MarkReady());
+    public void MarkReady()
+    {
+        TransitionTo(State.MarkReady());
+        Raise(new OrderReadyDomainEvent(Id, TableNumber));
+    }
 
-    public void Deliver() => TransitionTo(State.Deliver());
+    public void Deliver()
+    {
+        TransitionTo(State.Deliver());
+        Raise(new OrderDeliveredDomainEvent(Id));
+    }
 
-    public void Cancel() => TransitionTo(State.Cancel());
+    public void Cancel()
+    {
+        TransitionTo(State.Cancel());
+        Raise(new OrderCancelledDomainEvent(Id));
+    }
 
     private void TransitionTo(OrderState next) => Status = next.Status;
 

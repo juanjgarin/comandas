@@ -32,7 +32,7 @@ Practice/portfolio project: a restaurant order-management system built to learn 
 
 - A service never references another service's projects. Services communicate **only through events** defined in `Comandas.Contracts`.
 - Each service owns its database; no cross-database queries.
-- Domain events (inside a service, in Domain) ≠ integration events (between services, in Contracts). Map one to the other explicitly in Application/Infrastructure.
+- Domain events (inside a service, in Domain) ≠ integration events (between services, in Contracts). Map one to the other explicitly in Application/Infrastructure. Naming: domain events end in `DomainEvent` (`OrderConfirmedDomainEvent`); integration events do not (`OrderConfirmed`). Both are immutable `record`s, raised only after the state change succeeded.
 
 ## C# conventions
 
