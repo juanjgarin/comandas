@@ -192,7 +192,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* thin API layer, composition root. *Verify:* `.http` requests work end to end.
 - [x] **1.16 Persistence integration tests** — Testcontainers SQL Server: round-trip an order with owned `Money`, a combo hierarchy, and a concurrency conflict via `RowVersion`. One assembly-wide container (xUnit assembly fixture), real migrations, write-with-one-context/read-with-another; Ryuk disabled (no extra image), containers labelled `comandas.tests`.
   *Concept:* integration testing, verifying EF mappings against a real database. *Verify:* `dotnet test` green (Docker running).
-- [ ] **1.17 Phase 1 wrap-up** — full `dotnet test`, write `docs/phase-1.md`.
+- [x] **1.17 Phase 1 wrap-up** — full `dotnet test`, write `docs/phase-1.md`.
 
 ### Phase 2 — Discounts, CQRS, validation, error handling
 
