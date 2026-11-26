@@ -1,17 +1,23 @@
 using Comandas.Orders.API.Contracts;
 using Comandas.Orders.Application.Orders;
+using Comandas.Orders.Application.Orders.Commands.CreateOrder;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Comandas.Orders.API.Controllers;
 
 /// <summary>
 /// Thin HTTP adapter over the order use cases: translate HTTP -> use case -> HTTP status, nothing else.
-/// No business rules here; they live in the domain and are orchestrated by the application service.
+/// No business rules here; they live in the domain and are orchestrated by the application layer.
 /// </summary>
+/// <remarks>
+/// Being migrated to CQRS: migrated use cases are sent as commands through MediatR's <see cref="ISender"/>;
+/// the rest still call the application service until steps 2.7–2.8.
+/// </remarks>
 [ApiController]
 [Route("api/orders")]
 [Produces("application/json")]
-public sealed class OrdersController(OrderApplicationService orders) : ControllerBase
+public sealed class OrdersController(ISender sender, OrderApplicationService orders) : ControllerBase
 {
     /// <summary>Opens a new order for a table.</summary>
     [HttpPost]
@@ -20,7 +26,9 @@ public sealed class OrdersController(OrderApplicationService orders) : Controlle
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var orderId = await orders.CreateOrderAsync(request.TableNumber, cancellationToken);
+        // The HTTP request (API contract) and the command (application contract) are separate types on purpose:
+        // the public API can evolve without changing the use case, and vice versa.
+        var orderId = await sender.Send(new CreateOrderCommand(request.TableNumber), cancellationToken);
 
         // 201 + Location header pointing to GET /api/orders/{id}
         return CreatedAtAction(nameof(GetById), new { id = orderId }, new CreatedResponse(orderId));

@@ -16,7 +16,12 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.15" />
   </ItemGroup>
 
-  <!-- HTTP API: .NET generates the OpenAPI document; Swagger UI only displays it (no Swashbuckle generator) -->
+  <!-- Application: in-process Mediator for CQRS. Pinned to 12.5.0, the last Apache 2.0 release (D1): do not upgrade to 13+ -->
+  <ItemGroup>
+    <PackageVersion Include="MediatR" Version="12.5.0" />
+  </ItemGroup>
+
+  <!-- HTTP API:.NET generates the OpenAPI document; Swagger UI only displays it (no Swashbuckle generator) -->
   <ItemGroup>
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.15" />
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="11.0.1" />

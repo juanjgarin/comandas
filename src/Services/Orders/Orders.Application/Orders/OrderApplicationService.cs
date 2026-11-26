@@ -1,7 +1,6 @@
 using Comandas.Orders.Application.Abstractions;
 using Comandas.Orders.Application.Common;
 using Comandas.Orders.Domain.Orders;
-using Microsoft.Extensions.Options;
 
 namespace Comandas.Orders.Application.Orders;
 
@@ -10,25 +9,15 @@ namespace Comandas.Orders.Application.Orders;
 /// Unit of Work. No business rules live here. It knows only abstractions, never EF Core (Dependency Inversion).
 /// </summary>
 /// <remarks>
-/// Deliberately one class with many use cases: in step 2.6 it is split into one CQRS handler per use case,
-/// to see the Single Responsibility Principle at work on real code.
+/// Deliberately one class with many use cases, being split into one CQRS handler per use case
+/// (step 2.6 moved "create order" to <c>CreateOrderCommandHandler</c>; steps 2.7–2.8 move the rest and delete
+/// this class), to see the Single Responsibility Principle at work on real code.
 /// </remarks>
 public sealed class OrderApplicationService(
     IOrderRepository orders,
     IMenuItemRepository menuItems,
-    IUnitOfWork unitOfWork,
-    IOptions<RestaurantOptions> restaurantOptions)
+    IUnitOfWork unitOfWork)
 {
-    public async Task<Guid> CreateOrderAsync(int tableNumber, CancellationToken cancellationToken)
-    {
-        var order = Order.Create(tableNumber, restaurantOptions.Value.Currency);
-
-        orders.Add(order);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return order.Id;
-    }
-
     public async Task<OrderDto> GetOrderAsync(Guid orderId, CancellationToken cancellationToken)
     {
         var order = await GetExistingOrderAsync(orderId, cancellationToken);

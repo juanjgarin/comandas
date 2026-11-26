@@ -13,6 +13,10 @@ public static class DependencyInjection
         services.AddScoped<OrderApplicationService>();
         services.AddScoped<MenuApplicationService>();
 
+        // Mediator: registers every IRequestHandler in this assembly, so a new use case needs no extra line here
+        // (Open/Closed). Handlers are transient and receive the request's scoped repositories and Unit of Work.
+        services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly));
+
         return services;
     }
 }
