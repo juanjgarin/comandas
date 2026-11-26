@@ -12,11 +12,13 @@
 
   <!-- Microsoft.Extensions (keep on the 10.0.x line, matching the .NET 10 runtime) -->
   <ItemGroup>
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.15" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.15" />
   </ItemGroup>
 
   <!-- Persistence (EF Core 10.x, matching the dotnet-ef 10.0.x local tool) -->
   <ItemGroup>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.15" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.15" />
   </ItemGroup>
 

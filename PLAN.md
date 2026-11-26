@@ -186,7 +186,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* Fluent API, owned types, inheritance mapping, optimistic concurrency, SRP. *Verify:* `dotnet build`.
 - [x] **1.13 Repositories + Unit of Work** — implementations; orders loaded tracked with their lines; the read-only menu loaded whole with `AsNoTrackingWithIdentityResolution` so nested combos form a complete tree (real-database tests in 1.16).
   *Concept:* Repository + UoW (implementation side). *Verify:* `dotnet build`.
-- [ ] **1.14 Migrations, startup migration, seed** — initial migration, apply on startup, seed a small menu (dishes + one combo). Local SQL Server via `docker run` (compose arrives in phase 3).
+- [x] **1.14 Migrations, startup migration, seed** — initial migration, apply on startup, seed a sample menu (9 dishes, 3 combos incl. a nested one) through domain factories with EF Core `UseSeeding`/`UseAsyncSeeding` (idempotent). Local SQL Server via `docker run` (compose arrives in phase 3); connection string in User Secrets.
   *Concept:* EF migrations, data seeding. *Verify:* API starts, database and tables exist.
 - [ ] **1.15 Basic endpoints** — `GET /api/menu`, `POST /api/orders`, `POST /api/orders/{id}/items`, `POST /api/orders/{id}/confirm|cancel|…`, `GET /api/orders/{id}`; OpenAPI + a `.http` file for manual testing. API style per decision D3.
   *Concept:* thin API layer, composition root. *Verify:* `.http` requests work end to end.

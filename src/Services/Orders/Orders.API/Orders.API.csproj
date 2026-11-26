@@ -1,6 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <!-- API: HTTP entry point and composition root (the only project that knows every layer, to wire up DI). -->
+  <PropertyGroup>
+    <!-- Local development secrets (connection string) live outside the repo: dotnet user-secrets. -->
+    <UserSecretsId>comandas-orders-api</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Needed only by the dotnet-ef tool at design time (creating migrations); never shipped. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Orders.Application\Orders.Application.csproj" />
     <ProjectReference Include="..\Orders.Infrastructure\Orders.Infrastructure.csproj" />

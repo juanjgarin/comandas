@@ -87,10 +87,19 @@ dotnet build Comandas.slnx
 dotnet test Comandas.slnx
 dotnet test --project tests/Orders.Domain.Tests  # one project (Microsoft.Testing.Platform syntax)
 
-# EF Core migrations (local tool: dotnet tool restore)
+# Local SQL Server (until phase 3's docker compose). One-time setup; use the SAME password in both commands.
+#   The connection string is a dev secret: it lives in User Secrets, never in the repo.
+docker run -d --name comandas-sqlserver -e ACCEPT_EULA=Y -e MSSQL_PID=Developer -e "MSSQL_SA_PASSWORD=<password>" -p 1433:1433 -v comandas-sqlserver-data:/var/opt/mssql mcr.microsoft.com/mssql/server:2022-latest
+dotnet user-secrets set "ConnectionStrings:OrdersDb" "Server=localhost,1433;Database=OrdersDb;User Id=sa;Password=<password>;TrustServerCertificate=True" --project src/Services/Orders/Orders.API
+docker start comandas-sqlserver    # later sessions
+
+# EF Core migrations (local tool: dotnet tool restore). Creating one needs no database, only a non-empty connection string.
+$env:ConnectionStrings__OrdersDb = "Server=design-time-only"
 dotnet ef migrations add <Name> --project src/Services/Orders/Orders.Infrastructure --startup-project src/Services/Orders/Orders.API --output-dir Persistence/Migrations
 
-# Run an API locally (needs infra running)
+# Run an API locally (needs SQL Server running). Migrations + seed are applied on startup.
+#   User Secrets load only in the Development environment.
+$env:ASPNETCORE_ENVIRONMENT = "Development"
 dotnet run --project src/Services/Orders/Orders.API
 
 # Docker (from phase 3)
