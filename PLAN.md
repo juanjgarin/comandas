@@ -202,7 +202,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* Strategy, DIP (time as a dependency). *Verify:* tests green.
 - [x] **2.3 2-for-1 strategy** — counted per line (floor(quantity / 2) free at the line's price); `OrderLine` snapshots the item's 2-for-1 flag (migration `AddTwoForOneFlagToOrderLines`; line merging now also requires the same flag); tests (odd/even quantities, combos, flag changed after ordering).
   *Concept:* Strategy, polymorphism. *Verify:* tests green.
-- [ ] **2.4 Discount Factory** — selects/builds the applicable strategy(ies) from context (time, items, requested code); stacking policy per decision D6; tests.
+- [x] **2.4 Discount Factory** — `IDiscountFactory.CreateBestFor(context, request)` builds the candidates (manual percentage, happy hour, 2-for-1) and returns the one that saves the most (D6), or the `NoDiscount` Null Object; settings come in as a plain `DiscountPolicy` record; tests.
   *Concept:* Factory, SRP (selection separated from calculation). *Verify:* tests green.
 - [ ] **2.5 Discounts in the `Order` aggregate** — apply discount, persist applied discount (owned type), total = subtotal − discount; migration.
   *Concept:* aggregate consistency, owned types. *Verify:* domain + integration tests green.
@@ -297,7 +297,7 @@ At each step below I will present the options with pros and cons and you choose.
 | D3 | API style | 1.15 | Minimal APIs (endpoint groups) · Controllers | ✅ **Decided:** Controllers (`[ApiController]`, one per resource). API docs UI: Swagger UI over the .NET-generated OpenAPI document |
 | D4 | `MenuItem` inheritance mapping | 1.12 | TPH · TPT · TPC | ✅ **Decided:** TPH (one `MenuItems` table, `Kind` discriminator; dish/combo-only columns are NULL for the other type) |
 | D5 | Query side data access | 2.8 | Queries use `DbContext` directly (via a read interface) · go through repositories | Read interface over `DbContext` |
-| D6 | Discount stacking | 2.4 | One discount per order (best wins) · stack in a defined order | Best wins |
+| D6 | Discount stacking | 2.4 | One discount per order (best wins) · stack in a defined order | ✅ **Decided:** best single discount wins (not combinable); ties go to the manual request |
 | D7 | Infra-only startup | 3.5 | `docker compose up sqlserver rabbitmq redis` · compose profiles · separate infra file | Profiles |
 | D8 | Runtime base image | 3.4 | `aspnet` (Debian) · `aspnet` chiseled/noble | Chiseled |
 | D9 | Outbox implementation | 4.3 | MassTransit EF Core transactional outbox · hand-rolled outbox table + background publisher | Discuss (teaching vs production) |
