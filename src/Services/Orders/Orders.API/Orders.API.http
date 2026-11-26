@@ -1,0 +1,58 @@
+### Comandas — Orders.API manual tests
+### Run the requests top to bottom (VS Code "REST Client" extension, Visual Studio or Rider).
+### Named requests (# @name) let later requests reuse ids from earlier responses.
+
+@baseUrl = http://localhost:5102
+
+### 1. The menu (dishes and combos with calculated prices)
+# @name menu
+GET {{baseUrl}}/api/menu
+
+### 2. Open an order for table 12
+# @name createOrder
+POST {{baseUrl}}/api/orders
+Content-Type: application/json
+
+{
+  "tableNumber": 12
+}
+
+### 3. Add 2 × the first menu item
+# @name addItem
+POST {{baseUrl}}/api/orders/{{createOrder.response.body.$.id}}/items
+Content-Type: application/json
+
+{
+  "menuItemId": "{{menu.response.body.$[0].id}}",
+  "quantity": 2
+}
+
+### 4. Change that line to 3 units
+PATCH {{baseUrl}}/api/orders/{{createOrder.response.body.$.id}}/items/{{addItem.response.body.$.lineId}}
+Content-Type: application/json
+
+{
+  "quantity": 3
+}
+
+### 5. See the order (lines, subtotal, status)
+GET {{baseUrl}}/api/orders/{{createOrder.response.body.$.id}}
+
+### 6. Lifecycle: Created -> Confirmed -> InPreparation -> Ready -> Delivered
+POST {{baseUrl}}/api/orders/{{createOrder.response.body.$.id}}/confirm
+
+###
+POST {{baseUrl}}/api/orders/{{createOrder.response.body.$.id}}/start-preparation
+
+###
+POST {{baseUrl}}/api/orders/{{createOrder.response.body.$.id}}/mark-ready
+
+###
+POST {{baseUrl}}/api/orders/{{createOrder.response.body.$.id}}/deliver
+
+### 7. Final state
+GET {{baseUrl}}/api/orders/{{createOrder.response.body.$.id}}
+
+### 8. Invalid transition: cancelling a delivered order.
+### Until step 2.11 (ProblemDetails) this returns a 500; afterwards a clear 4xx error.
+POST {{baseUrl}}/api/orders/{{createOrder.response.body.$.id}}/cancel

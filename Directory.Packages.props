@@ -16,6 +16,12 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.15" />
   </ItemGroup>
 
+  <!-- HTTP API: .NET generates the OpenAPI document; Swagger UI only displays it (no Swashbuckle generator) -->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.15" />
+    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="11.0.1" />
+  </ItemGroup>
+
   <!-- Persistence (EF Core 10.x, matching the dotnet-ef 10.0.x local tool) -->
   <ItemGroup>
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.15" />
