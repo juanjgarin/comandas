@@ -196,7 +196,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
 
 ### Phase 2 — Discounts, CQRS, validation, error handling
 
-- [ ] **2.1 Discount Strategy: fixed percentage** — `IDiscountStrategy` (calculates a discount for an order), `PercentageDiscount`; tests.
+- [x] **2.1 Discount Strategy: fixed percentage** — `IDiscountStrategy` (`Description` + `CalculateDiscount(DiscountContext)`; strategies get a read-only context, not the Order), `PercentageDiscount` in (0, 100]; tests.
   *Concept:* Strategy, OCP. *Verify:* tests green.
 - [ ] **2.2 Happy hour strategy** — time-window based, uses `TimeProvider` (testable with `FakeTimeProvider`); tests at window edges.
   *Concept:* Strategy, DIP (time as a dependency). *Verify:* tests green.

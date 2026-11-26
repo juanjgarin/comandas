@@ -7,8 +7,10 @@
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <!-- CA1707: test names intentionally use underscores (Method_Scenario_ExpectedResult). -->
-    <NoWarn>$(NoWarn);CA1707</NoWarn>
+    <!-- CA1707: test names intentionally use underscores (Method_Scenario_ExpectedResult).
+         CA1859: tests deliberately use abstractions (e.g. IDiscountStrategy) to prove polymorphism;
+                 the micro-performance gain of concrete types is irrelevant here. Still enforced in src/. -->
+    <NoWarn>$(NoWarn);CA1707;CA1859</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
