@@ -1,4 +1,5 @@
 using Comandas.Orders.Domain.Menu;
+using Comandas.Orders.Domain.Orders.States;
 using Comandas.SharedKernel.Domain;
 using Comandas.SharedKernel.ValueObjects;
 
@@ -20,6 +21,7 @@ public sealed class Order : AggregateRoot<Guid>
     {
         TableNumber = tableNumber;
         Currency = currency;
+        Status = OrderStatus.Created;
     }
 
     // Parameterless constructor for EF Core materialization only.
@@ -33,10 +35,16 @@ public sealed class Order : AggregateRoot<Guid>
     /// <summary>Every line of the order must be priced in this currency.</summary>
     public string Currency { get; private set; }
 
+    /// <summary>Where the order is in its lifecycle. Persisted as-is; the behavior comes from <see cref="State"/>.</summary>
+    public OrderStatus Status { get; private set; }
+
     public IReadOnlyCollection<OrderLine> Lines => _lines.AsReadOnly();
 
     /// <summary>Sum of all line totals, before discounts (discounts arrive in phase 2).</summary>
     public Money Subtotal => _lines.Aggregate(Money.Zero(Currency), (total, line) => total + line.LineTotal);
+
+    // State pattern: the object that knows what is allowed in the current status.
+    private OrderState State => OrderState.From(Status);
 
     public static Order Create(int tableNumber, string currency)
     {
@@ -59,6 +67,7 @@ public sealed class Order : AggregateRoot<Guid>
     {
         ArgumentNullException.ThrowIfNull(item);
         ArgumentNullException.ThrowIfNull(quantity);
+        EnsureLinesCanBeEdited();
 
         if (!item.CanBeOrdered)
         {
@@ -88,11 +97,47 @@ public sealed class Order : AggregateRoot<Guid>
     public void ChangeLineQuantity(Guid lineId, Quantity newQuantity)
     {
         ArgumentNullException.ThrowIfNull(newQuantity);
+        EnsureLinesCanBeEdited();
 
         GetLine(lineId).ChangeQuantity(newQuantity);
     }
 
-    public void RemoveLine(Guid lineId) => _lines.Remove(GetLine(lineId));
+    public void RemoveLine(Guid lineId)
+    {
+        EnsureLinesCanBeEdited();
+
+        _lines.Remove(GetLine(lineId));
+    }
+
+    // --- Lifecycle (State pattern): Order delegates; the current state decides or throws. ---
+
+    public void Confirm()
+    {
+        if (_lines.Count == 0)
+        {
+            throw new DomainException("Cannot confirm an order without lines.");
+        }
+
+        TransitionTo(State.Confirm());
+    }
+
+    public void StartPreparation() => TransitionTo(State.StartPreparation());
+
+    public void MarkReady() => TransitionTo(State.MarkReady());
+
+    public void Deliver() => TransitionTo(State.Deliver());
+
+    public void Cancel() => TransitionTo(State.Cancel());
+
+    private void TransitionTo(OrderState next) => Status = next.Status;
+
+    private void EnsureLinesCanBeEdited()
+    {
+        if (!State.CanEditLines)
+        {
+            throw new DomainException($"Cannot change the lines of an order that is {Status}.");
+        }
+    }
 
     private OrderLine GetLine(Guid lineId) =>
         _lines.Find(line => line.Id == lineId)

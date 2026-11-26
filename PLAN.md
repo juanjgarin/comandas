@@ -176,7 +176,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* Composite, LSP. *Verify:* tests including a nested-combo case.
 - [x] **1.8 `Order` aggregate + `OrderLine`** — create for a table with a fixed currency, add/remove/change quantity of lines (snapshot of item name and unit price; same item at same price merges), subtotal; tests. ("Only editable while `Created`" moved to 1.9, where states exist.)
   *Concept:* aggregate root, invariants, encapsulation (`IReadOnlyCollection`, private setters). *Verify:* tests green.
-- [ ] **1.9 Order states (State pattern)** — `OrderState` abstract + one class per state; `Order` delegates `Confirm/StartPreparation/MarkReady/Deliver/Cancel`; invalid transitions throw `DomainException`; lines can only be changed while `Created`; full transition-matrix tests (theory-based).
+- [x] **1.9 Order states (State pattern)** — `OrderState` abstract + one internal singleton class per state, each returning the next state (variant chosen over the GoF back-reference one); `Order` persists an `OrderStatus` enum; `Order` delegates `Confirm/StartPreparation/MarkReady/Deliver/Cancel`; invalid transitions throw `DomainException`; lines can only be changed while `Created`; full transition-matrix tests (theory-based).
   *Concept:* State, OCP, LSP. *Verify:* every valid and invalid transition covered.
 - [ ] **1.10 Domain events** — `Order` raises `OrderCreated`, `OrderConfirmed`, `OrderReady`, `OrderCancelled`… (collected, not yet dispatched); tests assert they are raised.
   *Concept:* Observer / Domain Events. *Verify:* tests green.
