@@ -174,9 +174,9 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* inheritance, polymorphism, encapsulation. *Verify:* tests green.
 - [x] **1.7 `Combo` (Composite)** — contains other `MenuItem`s with a quantity (including nested combos); price = sum of component subtotals minus the combo discount % (decided at the step, over fixed or hybrid pricing); `CanBeOrdered` is recursive; guards against cycles, mixed currencies and fewer than 2 units; tests.
   *Concept:* Composite, LSP. *Verify:* tests including a nested-combo case.
-- [ ] **1.8 `Order` aggregate + `OrderLine`** — create for a table, add/remove/change quantity of lines (snapshot of item name and unit price), subtotal; only editable while `Created`; tests.
+- [x] **1.8 `Order` aggregate + `OrderLine`** — create for a table with a fixed currency, add/remove/change quantity of lines (snapshot of item name and unit price; same item at same price merges), subtotal; tests. ("Only editable while `Created`" moved to 1.9, where states exist.)
   *Concept:* aggregate root, invariants, encapsulation (`IReadOnlyCollection`, private setters). *Verify:* tests green.
-- [ ] **1.9 Order states (State pattern)** — `OrderState` abstract + one class per state; `Order` delegates `Confirm/StartPreparation/MarkReady/Deliver/Cancel`; invalid transitions throw `DomainException`; full transition-matrix tests (theory-based).
+- [ ] **1.9 Order states (State pattern)** — `OrderState` abstract + one class per state; `Order` delegates `Confirm/StartPreparation/MarkReady/Deliver/Cancel`; invalid transitions throw `DomainException`; lines can only be changed while `Created`; full transition-matrix tests (theory-based).
   *Concept:* State, OCP, LSP. *Verify:* every valid and invalid transition covered.
 - [ ] **1.10 Domain events** — `Order` raises `OrderCreated`, `OrderConfirmed`, `OrderReady`, `OrderCancelled`… (collected, not yet dispatched); tests assert they are raised.
   *Concept:* Observer / Domain Events. *Verify:* tests green.
