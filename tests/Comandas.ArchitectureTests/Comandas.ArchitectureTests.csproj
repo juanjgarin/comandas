@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Executable architecture rules: fail the build pipeline when a layer depends on something it must not. -->
+  <ItemGroup>
+    <PackageReference Include="TngTech.ArchUnitNET.xUnitV3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BuildingBlocks\Comandas.SharedKernel\Comandas.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\src\Services\Orders\Orders.Domain\Orders.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Services\Orders\Orders.Application\Orders.Application.csproj" />
+    <ProjectReference Include="..\..\src\Services\Orders\Orders.Infrastructure\Orders.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Services\Orders\Orders.API\Orders.API.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,13 +1,19 @@
 <Project>
   <!--
     Central Package Management: every NuGet version is declared once, here.
-    Projects reference packages WITHOUT a Version attribute: <PackageReference Include="xunit" />
+    Projects reference packages WITHOUT a Version attribute: <PackageReference Include="xunit.v3" />
     Packages are added only when a PLAN.md step needs them.
+    Licensing (decision D1): AwesomeAssertions instead of FluentAssertions v8+, MediatR 12.5.0, MassTransit 8.x.
   -->
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
+
+  <!-- Testing -->
   <ItemGroup>
+    <PackageVersion Include="xunit.v3" Version="4.0.3" />
+    <PackageVersion Include="AwesomeAssertions" Version="9.6.0" />
+    <PackageVersion Include="TngTech.ArchUnitNET.xUnitV3" Version="0.13.5" />
   </ItemGroup>
 </Project>

@@ -13,6 +13,7 @@ mini-restaurant/
 ├── Comandas.slnx                      # solution (XML .slnx format, .NET 10 default)
 ├── Directory.Build.props              # shared MSBuild settings (net10.0, nullable, warnings as errors)
 ├── Directory.Packages.props           # central package management (one version per package)
+├── global.json                        # pins the .NET SDK (10.0.x) and opts dotnet test into Microsoft.Testing.Platform
 ├── .editorconfig / .gitignore / .dockerignore
 ├── dotnet-tools.json                  # local tools (dotnet-ef 10.0.x, pinned to match EF Core 10)
 ├── docker-compose.yml                 # infra + services
@@ -163,7 +164,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* project hygiene, reproducible builds. *Verify:* `dotnet build` succeeds on an empty solution.
 - [x] **1.2 Orders projects and references** — create `Orders.Domain`, `Orders.Application`, `Orders.Infrastructure`, `Orders.API`, `Comandas.SharedKernel` and wire references following the dependency rule.
   *Concept:* Clean Architecture, Dependency Rule. *Verify:* `dotnet build`.
-- [ ] **1.3 Architecture tests** — a test project that fails if, e.g., Domain references EF Core or Application references Infrastructure.
+- [x] **1.3 Architecture tests** — a test project that fails if, e.g., Domain references EF Core or Application references Infrastructure.
   *Concept:* making architecture rules executable. *Verify:* `dotnet test` green; temporarily adding a forbidden reference turns it red.
 - [ ] **1.4 SharedKernel + `Money` value object** — `Entity`, `AggregateRoot`, `ValueObject`, `DomainException`, `IDomainEvent`; `Money` (amount + currency, immutable, arithmetic, no negatives, currency mismatch throws) with unit tests.
   *Concept:* Value Object, immutability, value equality, encapsulation. *Verify:* `Money` tests green.

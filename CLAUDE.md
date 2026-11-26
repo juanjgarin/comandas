@@ -85,7 +85,7 @@ Practice/portfolio project: a restaurant order-management system built to learn 
 # Build and test
 dotnet build Comandas.slnx
 dotnet test Comandas.slnx
-dotnet test tests/Orders.Domain.Tests            # one project
+dotnet test --project tests/Orders.Domain.Tests  # one project (Microsoft.Testing.Platform syntax)
 
 # EF Core migrations (local tool: dotnet tool restore)
 dotnet ef migrations add <Name> --project src/Services/Orders/Orders.Infrastructure --startup-project src/Services/Orders/Orders.API --output-dir Persistence/Migrations

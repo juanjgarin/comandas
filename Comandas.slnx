@@ -10,4 +10,7 @@
     <Project Path="src/Services/Orders/Orders.Domain/Orders.Domain.csproj" />
     <Project Path="src/Services/Orders/Orders.Infrastructure/Orders.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Comandas.ArchitectureTests/Comandas.ArchitectureTests.csproj" />
+  </Folder>
 </Solution>
