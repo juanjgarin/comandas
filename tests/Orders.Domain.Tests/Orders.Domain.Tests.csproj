@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Pure unit tests of the Orders domain: no database, no mocks, no I/O. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Services\Orders\Orders.Domain\Orders.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

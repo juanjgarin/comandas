@@ -168,7 +168,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* making architecture rules executable. *Verify:* `dotnet test` green; temporarily adding a forbidden reference turns it red.
 - [x] **1.4 SharedKernel + `Money` value object** — `Entity`, `AggregateRoot`, `ValueObject`, `DomainException`, `IDomainEvent`; `Money` (amount + currency, immutable, arithmetic, no negatives, currency mismatch throws) with unit tests.
   *Concept:* Value Object, immutability, value equality, encapsulation. *Verify:* `Money` tests green.
-- [ ] **1.5 `Quantity` value object** — positive integer with bounds, tests.
+- [x] **1.5 `Quantity` value object** — positive integer with bounds, tests.
   *Concept:* Value Object, primitive obsession avoided. *Verify:* tests green.
 - [ ] **1.6 `MenuItem` (abstract) and `Dish`** — name, base price, availability, `IsTwoForOneEligible` flag; abstract `GetPrice()`; tests.
   *Concept:* inheritance, polymorphism, encapsulation. *Verify:* tests green.
