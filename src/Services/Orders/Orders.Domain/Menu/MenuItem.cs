@@ -34,8 +34,20 @@ public abstract class MenuItem : AggregateRoot<Guid>
     /// <summary>Flag used by the "2-for-1" discount (phase 2).</summary>
     public bool IsTwoForOneEligible { get; private set; }
 
+    /// <summary>
+    /// Whether an order may include this item right now. A dish only needs to be available;
+    /// a combo also needs every component to be orderable (Composite).
+    /// </summary>
+    public virtual bool CanBeOrdered => IsAvailable;
+
     /// <summary>The price of one unit of this item. Each kind of item calculates it differently.</summary>
     public abstract Money GetPrice();
+
+    /// <summary>
+    /// Whether <paramref name="item"/> is part of this item's tree. A leaf contains nothing;
+    /// a combo searches its components recursively (used to prevent cycles).
+    /// </summary>
+    public virtual bool Contains(MenuItem item) => false;
 
     public void Rename(string newName) => Name = ValidateName(newName);
 

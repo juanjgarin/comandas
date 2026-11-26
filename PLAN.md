@@ -172,7 +172,7 @@ Goal: one service with a complete, well-tested domain and EF Core persistence. I
   *Concept:* Value Object, primitive obsession avoided. *Verify:* tests green.
 - [x] **1.6 `MenuItem` (abstract) and `Dish`** — name, base price, availability, `IsTwoForOneEligible` flag; abstract `GetPrice()`; tests.
   *Concept:* inheritance, polymorphism, encapsulation. *Verify:* tests green.
-- [ ] **1.7 `Combo` (Composite)** — contains other `MenuItem`s (including nested combos), price = rule decided at the step (e.g. sum of children minus combo discount, or fixed combo price); guards against self-containment and empty combos; tests.
+- [x] **1.7 `Combo` (Composite)** — contains other `MenuItem`s with a quantity (including nested combos); price = sum of component subtotals minus the combo discount % (decided at the step, over fixed or hybrid pricing); `CanBeOrdered` is recursive; guards against cycles, mixed currencies and fewer than 2 units; tests.
   *Concept:* Composite, LSP. *Verify:* tests including a nested-combo case.
 - [ ] **1.8 `Order` aggregate + `OrderLine`** — create for a table, add/remove/change quantity of lines (snapshot of item name and unit price), subtotal; only editable while `Created`; tests.
   *Concept:* aggregate root, invariants, encapsulation (`IReadOnlyCollection`, private setters). *Verify:* tests green.
