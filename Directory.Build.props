@@ -1,0 +1,21 @@
+<Project>
+  <!--
+    Settings shared by every C# project under this folder (MSBuild imports this file automatically).
+    Keeping them here means no project can silently opt out of nullable checks or strict warnings.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <!-- Every root namespace starts with "Comandas." (Orders.Domain -> Comandas.Orders.Domain). -->
+  <PropertyGroup Condition="!$(MSBuildProjectName.StartsWith('Comandas.'))">
+    <RootNamespace>Comandas.$(MSBuildProjectName)</RootNamespace>
+  </PropertyGroup>
+</Project>
